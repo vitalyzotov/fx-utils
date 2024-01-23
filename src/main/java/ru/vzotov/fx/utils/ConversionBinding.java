@@ -13,6 +13,14 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * This class is used to handle the conversion binding in the application.
+ * It provides methods for managing the binding process between different data types or objects.
+ * It is particularly useful when we need to convert data types during data transfer between different application layers.
+ *
+ * @param <U> the type of the target property in the conversion binding.
+ * @param <V> the type of the source property in the conversion binding.
+ */
 public class ConversionBinding<U, V> implements ChangeListener<Object>, WeakListener {
 
     private static final Logger log = LoggerFactory.getLogger(ConversionBinding.class);
@@ -26,6 +34,21 @@ public class ConversionBinding<U, V> implements ChangeListener<Object>, WeakList
         }
     }
 
+    /**
+     * Binds a target property to a source property with conversion functions.
+     * This method creates a new ConversionBinding instance and adds listeners to the target and source properties.
+     * The target's value is set to the result of applying the toTarget function to the source's value.
+     *
+     * @param target   The target property to bind. Must not be null.
+     * @param source   The source property to bind. Must not be null.
+     * @param toSource The function to convert a value of type U to a value of type V. Must not be null.
+     * @param toTarget The function to convert a value of type V to a value of type U. Must not be null.
+     * @param <U>      The type of the target property.
+     * @param <V>      The type of the source property.
+     * @return A new ConversionBinding instance that binds the target property to the source property.
+     * @throws NullPointerException     If any of the parameters are null.
+     * @throws IllegalArgumentException If the target and source are the same property.
+     */
     public static <U, V> ConversionBinding<U, V> bind(Property<U> target, Property<V> source, Function<U, V> toSource, Function<V, U> toTarget) {
         checkParameters(target, source);
         Objects.requireNonNull(toSource);
@@ -37,6 +60,23 @@ public class ConversionBinding<U, V> implements ChangeListener<Object>, WeakList
         return binding;
     }
 
+    /**
+     * Binds a read-only target property to a source property with conversion functions.
+     * This method creates a new ConversionBinding instance and adds listeners to the target and source properties.
+     * The target's value is set to the result of applying the toTarget function to the source's value.
+     * The setter consumer is used to set the value of the target property.
+     *
+     * @param target   The read-only target property to bind. Must not be null.
+     * @param source   The source property to bind. Must not be null.
+     * @param toSource The function to convert a value of type U to a value of type V. Must not be null.
+     * @param toTarget The function to convert a value of type V to a value of type U. Must not be null.
+     * @param setter   The consumer to set the value of the target property. Must not be null.
+     * @param <U>      The type of the target property.
+     * @param <V>      The type of the source property.
+     * @return A new ConversionBinding instance that binds the target property to the source property.
+     * @throws NullPointerException     If any of the parameters are null.
+     * @throws IllegalArgumentException If the target and source are the same property.
+     */
     public static <U, V> ConversionBinding<U, V> bind(ReadOnlyProperty<U> target, Property<V> source, Function<U, V> toSource, Function<V, U> toTarget, Consumer<U> setter) {
         checkParameters(target, source);
         Objects.requireNonNull(toSource);
